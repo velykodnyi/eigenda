@@ -4,7 +4,7 @@ environment:
 
 deployers:
 - name: "default"
-  rpc: http://172.17.0.1:8545
+  rpc: http://172.17.0.1:8547
   verifyContracts: false
   verifierUrl: http://172.17.0.1:4000/api
   slow: false
@@ -39,12 +39,12 @@ services:
     globals:
       HOSTNAME: localhost
       TIMEOUT: 20s
-      CHAIN_RPC: http://172.17.0.1:8545
+      CHAIN_RPC: http://172.17.0.1:8547
       CHAIN_ID: 40525
-      G1_PATH: /data/kzg/g1.point
-      G2_PATH: /data/kzg/g2.point
+      G1_PATH: /data/kzg/g1.point.300000
+      G2_PATH: /data/kzg/g2.point.300000
       CACHE_PATH: /data/kzg/SRSTables
-      SRS_ORDER: 3000
-      CHALLENGE_ORDER: 3000
+      SRS_ORDER: 300000
+      CHALLENGE_ORDER: 300000
       STD_LOG_LEVEL: "trace"
       VERBOSE: true

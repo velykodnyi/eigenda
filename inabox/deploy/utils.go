@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -161,7 +162,7 @@ func execForgeScript(script, privateKey string, deployer *ContractDeployer, extr
 
 	err := cmd.Run()
 	if err != nil {
-		log.Print(fmt.Sprint(err) + ": " + stderr.String())
+		log.Print(fmt.Sprint(err) + ": " + string(removeANSIColorCodes(out.Bytes())))
 		log.Panicf("Failed to execute forge script. Err: %s", err)
 	} else {
 		log.Print(out.String())
@@ -304,13 +305,20 @@ func execCmd(name string, args []string, envVars []string) error {
 	var out bytes.Buffer
 	var stderr bytes.Buffer
 	// TODO: When these are uncommented, the deployer sometimes fails to start anvil
-	// cmd.Stdout = &out
-	// cmd.Stderr = &stderr
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
 
 	err := cmd.Run()
 	if err != nil {
+		fmt.Print("Err: ", out.String())
 		return fmt.Errorf("%s: %s", err.Error(), stderr.String())
 	}
 	fmt.Print(out.String())
 	return nil
+}
+
+func removeANSIColorCodes(input []byte) []byte {
+	// Regular expression to match ANSI escape codes
+	re := regexp.MustCompile(`\x1b\[[0-9;]*m`)
+	return re.ReplaceAllLiteral(input, []byte(""))
 }

@@ -49,6 +49,16 @@ function start_trap {
         pid="$!"
         pids="$pids $pid"
     done
+
+    for FILE in $(ls $testpath/envs/ret*.env); do
+        set -a
+        source $FILE
+        set +a
+        ../retriever/bin/server &
+
+        pid="$!"
+        pids="$pids $pid"
+    done
     
     files=($(ls $testpath/envs/opr*.env))
     last_index=$(( ${#files[@]} - 1 ))
@@ -187,7 +197,7 @@ function stop_detached {
 function start_anvil {
 
     echo "Starting anvil server ....."
-    anvil --host 0.0.0.0 > /dev/null & 
+    anvil --host 0.0.0.0 --port 8547 > $testpath/logs/anvil.log 2>&1 & 
     anvil_pid=$! 
     echo "Anvil server started ....."
 
