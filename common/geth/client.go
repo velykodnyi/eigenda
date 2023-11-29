@@ -174,6 +174,7 @@ func (c *EthClient) EstimateGasPriceAndLimitAndSendTx(
 		c.Contracts[*tx.To()] = contract
 	}
 
+	c.Logger.Trace("submitting transaction", "txHash", tx.Hash().Hex(), "tag", tag, "gasUsed", opts.GasLimit, "nonce", opts.Nonce.Text(10))
 	tx, err = contract.RawTransact(opts, tx.Data())
 	if err != nil {
 		return nil, fmt.Errorf("EstimateGasPriceAndLimitAndSendTx: failed to send txn (%s): %w", tag, err)

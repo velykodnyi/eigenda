@@ -12,6 +12,7 @@ import (
 	"github.com/Layr-Labs/eigenda/core"
 	"github.com/Layr-Labs/eigenda/disperser"
 	"github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/gammazero/workerpool"
 	"github.com/hashicorp/go-multierror"
@@ -256,6 +257,13 @@ func (b *Batcher) HandleSingleBatch(ctx context.Context) error {
 	if err != nil {
 		_ = b.handleFailure(ctx, batch.BlobMetadata)
 		return fmt.Errorf("HandleSingleBatch: error confirming batch: %w", err)
+	}
+	log.Debug("[batcher] txn receipt", "txnHash", txnReceipt.TxHash.Hex(), "blockNumber", txnReceipt.BlockNumber, "gasUsed", txnReceipt.GasUsed, "status", txnReceipt.Status)
+	for _, l := range txnReceipt.Logs {
+		for _, t := range l.Topics {
+			log.Debug("[batcher] txn receipt log topic", "topic", t.Hex())
+		}
+		log.Debug("[batcher] txn receipt log data", "data", hexutil.Encode(l.Data))
 	}
 	log.Trace("[batcher] ConfirmBatch took", "duration", time.Since(stageTimer))
 	log.Info("[batcher] Batch confirmed at block", "blockNumber", txnReceipt.BlockNumber, "txnHash", txnReceipt.TxHash.Hex())
