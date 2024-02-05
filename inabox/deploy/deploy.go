@@ -110,6 +110,18 @@ func (env *Config) deployEigenDAContracts() {
 		log.Panicf("Error: %s", err.Error())
 	}
 	env.MockRollup = rollupAddr.MockRollup
+
+	// add rollkit address to path
+	execForgeScript("script/MockRollkitDeployer.s.sol:MockRollkitDeployer", env.Pks.EcdsaMap[deployer.Name].PrivateKey, deployer, []string{"--sig", "run(address)", env.EigenDA.ServiceManager})
+
+	// add rollkit address to path
+	data = readFile("script/output/mock_rollkit_deploy_output.json")
+	var rollkitAddr struct{ MockRollkit string }
+	err = json.Unmarshal(data, &rollkitAddr)
+	if err != nil {
+		log.Panicf("Error: %s", err.Error())
+	}
+	env.MockRollkit = rollkitAddr.MockRollkit
 }
 
 // Deploys a EigenDA experiment

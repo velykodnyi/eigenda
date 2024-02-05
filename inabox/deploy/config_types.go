@@ -155,8 +155,9 @@ type Config struct {
 
 	Deployers []*ContractDeployer `yaml:"deployers"`
 
-	EigenDA    EigenDAContract `yaml:"eigenda"`
-	MockRollup string          `yaml:"mockRollup" json:"mockRollup"`
+	EigenDA     EigenDAContract `yaml:"eigenda"`
+	MockRollup  string          `yaml:"mockRollup" json:"mockRollup"`
+	MockRollkit string          `yaml:"mockRollkit" json:"mockRollkit"`
 
 	Pks *PkConfig `yaml:"privateKeys"`
 
