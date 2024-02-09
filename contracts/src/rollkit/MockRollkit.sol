@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-import {EigenDABlobUtils} from "../../src/libraries/EigenDABlobUtils.sol";
-import {IEigenDAServiceManager} from "../../src/core/EigenDAServiceManager.sol";
+import {EigenDARollupUtils} from "../libraries/EigenDARollupUtils.sol";
+import {IEigenDAServiceManager} from "../interfaces/IEigenDAServiceManager.sol";
 
 struct BlobData {
     uint32 blobIndex;
@@ -29,13 +29,13 @@ contract MockRollkit {
      * @param _blobHeaders the blob headers
      * @param _blobVerificationProofs the blob verification proofs
      */
-    function submitBlobs(uint64[] calldata blobIds, IEigenDAServiceManager.BlobHeader[] calldata _blobHeaders, EigenDABlobUtils.BlobVerificationProof[] calldata _blobVerificationProofs, bytes[] memory _batchHeaderHashes) external {
+    function submitBlobs(uint64[] calldata blobIds, IEigenDAServiceManager.BlobHeader[] calldata _blobHeaders, EigenDARollupUtils.BlobVerificationProof[] calldata _blobVerificationProofs, bytes[] memory _batchHeaderHashes) external {
         // ensure the length of the blobIds, _blobHeaders and _blobVerificationProofs are the same, correct order
         require(blobIds.length == _blobHeaders.length && _blobHeaders.length == _blobVerificationProofs.length, "Length of blobIds, blobHeaders, and blobVerificationProofs must be equal.");
 
         for (uint i = 0; i < _blobHeaders.length; i++) {
             // verify the blob, revert if verification fails
-            EigenDABlobUtils.verifyBlob(_blobHeaders[i], eigenDAServiceManager, _blobVerificationProofs[i]);
+            EigenDARollupUtils.verifyBlob(_blobHeaders[i], eigenDAServiceManager, _blobVerificationProofs[i]);
 
             // store the blob header
             _blobDatas[blobIds[i]] = BlobData(_blobVerificationProofs[i].blobIndex, _batchHeaderHashes[i]);
